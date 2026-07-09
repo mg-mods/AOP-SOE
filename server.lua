@@ -10,6 +10,7 @@
 
 curVersion = "4.0"
 local RegisteredAOPCount = 0;
+local plcount = 0
 
 RegisterServerEvent('AOP:Startup')
 AddEventHandler('AOP:Startup', function()
@@ -161,6 +162,7 @@ end)
 
 RegisterServerEvent('AOP:CountRegistered')
 AddEventHandler('AOP:CountRegistered', function()
+	RegisteredAOPCount = 0
 	for i=1, #RegisteredAOP do
 		RegisteredAOPCount = RegisteredAOPCount + 1
 	end
@@ -169,16 +171,19 @@ end)
 Citizen.CreateThread(function()
     while autoChangeAOP do
 		local players = GetPlayers()
-		local plcount = 0
+		plcount = 0
+		local TabbedAOPName = nil
+		local TabbedAOPPlayerCount = nil
+		local TabbedAOPCoords = nil
 
 		for _, player in pairs(players) do
 			plcount = plcount + 1
 		end
 
 		for i=1, #RegisteredAOP do
-			local TabbedAOPName = RegisteredAOP[i].Name
-			local TabbedAOPPlayerCount = RegisteredAOP[i].MaxPlayerCount
-			local TabbedAOPCoords = RegisteredAOP[i].Coords
+			TabbedAOPName = RegisteredAOP[i].Name
+			TabbedAOPPlayerCount = RegisteredAOP[i].MaxPlayerCount
+			TabbedAOPCoords = RegisteredAOP[i].Coords
 
 			if TabbedAOPPlayerCount <= plcount then
 				FaxCurAOP = TabbedAOPName
@@ -203,6 +208,7 @@ RegisterCommand(StatusCommand, function(source, args, rawCommand)
 		TriggerEvent("AOP:CountRegistered")
 		TriggerClientEvent("Fax:ClientPrint", source, "Current AOP: " .. FaxCurAOP)
 		TriggerClientEvent("Fax:ClientPrint", source, "Auto Change AOP: " .. tostring(autoChangeAOP))
+		TriggerClientEvent("Fax:ClientPrint", source, "Players connected: " .. tostring(plcount))
 		TriggerClientEvent("Fax:ClientPrint", source, "Registered AOP: " .. tostring(RegisteredAOPCount))
 		TriggerClientEvent("Fax:ClientPrint", source, "Use AOP Spawn Points: " .. tostring(AOPSpawnsEnabled))
 		TriggerClientEvent("Fax:ClientPrint", source, "Using Permissions: " .. tostring(usingPerms))
@@ -223,16 +229,16 @@ end)
 
 RegisterCommand(HelpCommand, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or IsPlayerAceAllowed(source, "aopscript.aopcmd") or not usingPerms then
-		TriggerClientEvent("Fax:ClientPrint", source, "Status command: " .. StatusCommand .. "  --  Display various debug info; usage: <command>")
-		TriggerClientEvent("Fax:ClientPrint", source, "Refresh Command: " .. ConfigRefreshCommand .. "  --  Reload this config file; usage: <command>")
-		TriggerClientEvent("Fax:ClientPrint", source, "AOP Command: " .. AOPCommand .. "  --  Set the aop; usage: <command> [Area of Patrol]")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE LS Command: " .. SOECommandLS .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE BC Command: " .. SOECommandBC .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE PB Command: " .. SOECommandPB .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Green Command: " .. SOECommandGreenAll .. "  --  Set all SOE to green; usage: <command>")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Amber Command: " .. SOECommandAmberAll .. "  --  Set all SOE to amber; usage: <command>")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Red Command: " .. SOECommandRedAll .. "  --  Set all SOE to red; usage: <command>")
-		TriggerClientEvent("Fax:ClientPrint", source, "Help Command: " .. HelpCommand .. "  --  Display this message; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "Status command: /" .. StatusCommand .. "  --  Display various debug info; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "Refresh Command: /" .. ConfigRefreshCommand .. "  --  Reload this config file; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "AOP Command: /" .. AOPCommand .. "  --  Set the aop; usage: <command> [Area of Patrol]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE LS Command: /" .. SOECommandLS .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE BC Command: /" .. SOECommandBC .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE PB Command: /" .. SOECommandPB .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Green Command: /" .. SOECommandGreenAll .. "  --  Set all SOE to green; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Amber Command: /" .. SOECommandAmberAll .. "  --  Set all SOE to amber; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Red Command: /" .. SOECommandRedAll .. "  --  Set all SOE to red; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "Help Command: /" .. HelpCommand .. "  --  Display this message; usage: <command>")
 		TriggerClientEvent("Fax:ClientPrint", source, "------------------")
 		TriggerClientEvent("Fax:ClientPrint", source, "Current Version: " .. curVersion)
 		TriggerClientEvent("Fax:ClientPrint", source, "Script Credits: Script made by FAXES, edited by MGMods Studios")

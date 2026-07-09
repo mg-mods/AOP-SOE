@@ -9,9 +9,9 @@
 --- NO NEED TO EDIT THIS FILE!!!! EDIT THE CONFIG.LUA ---
 
 
-local AOPxNew = 0.660
-local AOPyNew = 1.430
-local AOPyNew2 = 1.430
+AOPxNew = AOPx
+AOPyNew = AOPy
+AOPyNew2 = AOPyNew + 0.025
 local soePBDisplay = soeRed
 local soeLSDisplay = soeRed
 local soeBCDisplay = soeRed

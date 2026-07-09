@@ -4,6 +4,7 @@
 
 fx_version 'bodacious'
 game 'gta5'
+version 'v4.0.0'
 
 author 'FAXES, MGMods Studios'
 
