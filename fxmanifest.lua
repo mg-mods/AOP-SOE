@@ -1,11 +1,11 @@
------------------------------------
--- Area of Patrol, Made by FAXES --
------------------------------------
+------------------------------------------------------
+-- Area of Patrol, made by FAXES ft. MGMods Studios --
+------------------------------------------------------
 
 fx_version 'bodacious'
 game 'gta5'
 
-author 'FAXES'
+author 'FAXES, MGMods Studios'
 
 client_script "config.lua"
 client_script "client.lua"

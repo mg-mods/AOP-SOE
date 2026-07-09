@@ -1,6 +1,6 @@
------------------------------------
--- Area of Patrol, Made by FAXES --
------------------------------------
+------------------------------------------------------
+-- Area of Patrol, made by FAXES ft. MGMods Studios --
+------------------------------------------------------
 
 --- NO NEED TO EDIT THIS FILE!!!! EDIT THE CONFIG.LUA ---
 --- NO NEED TO EDIT THIS FILE!!!! EDIT THE CONFIG.LUA ---
@@ -8,89 +8,162 @@
 --- NO NEED TO EDIT THIS FILE!!!! EDIT THE CONFIG.LUA ---
 --- NO NEED TO EDIT THIS FILE!!!! EDIT THE CONFIG.LUA ---
 
-FaxCurPT = false
-curVersion = "3.4"
-
-function GetDiscordPermissionSet(src)
-	if usingDiscordPerms then
-		for k, v in ipairs(GetPlayerIdentifiers(src)) do
-			if string.sub(v, 1, string.len("discord:")) == "discord:" then
-				identifierDiscord = v
-			end
-		end
-
-		if identifierDiscord then
-			-- Using Badger Discord API instead
-			local hasRole = exports['Badger_Discord_API']:CheckEqual(src, discordRoleIds)
-
-			if hasRole then
-				return true
-			else
-				print("^1[Fax-AOP] Player does not have the required Discord role: " .. GetPlayerName(src) .. "^7")
-				return false
-			end
-		else
-			print("^1[Fax-AOP] No Discord ID found for '" .. GetPlayerName(src) .. "'^7")
-			return false
-		end
-	else
-		return false
-	end
-end
-
+curVersion = "4.0"
+local RegisteredAOPCount = 0;
 
 RegisterServerEvent('AOP:Startup')
 AddEventHandler('AOP:Startup', function()
-	Wait(3000)
+	--Wait(3000)
+	Wait(200)
 	TriggerClientEvent("AOP:RunConfig", -1)
-	Wait(30000)
+	--Wait(30000)
+	Wait(200)
 	SetMapName("RP : " .. FaxCurAOP)
 end)
 
 TriggerEvent("AOP:Startup")
 
+RegisterCommand(ConfigRefreshCommand, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.aopadmin") or not usingPerms then
+		TriggerClientEvent("AOP:RunConfig", -1)
+		SetMapName("RP : " .. FaxCurAOP)
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
+	end
+end)
+
 RegisterCommand(AOPCommand, function(source, args, rawCommand)
-	if source == 0 or IsPlayerAceAllowed(source, "faxes.aopcmds") or GetDiscordPermissionSet(source) or not usingPerms then
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.aopcmd") or not usingPerms then
 		FaxCurAOP = table.concat(args, " ")
 		if(source == 0)then;print("AOP changed to: " .. FaxCurAOP);end
 		TriggerEvent("AOP:Sync")
 		SetMapName("RP : " .. FaxCurAOP)
 		if AOPChangeNotification then
-			TriggerClientEvent("AOP:DisNotification", -1, featColor .. "Area of Patrol ~w~has changed!~n~AOP: " .. FaxCurAOP)
+			TriggerClientEvent("AOP:DisNotification", -1, textColor .. "Area of Patrol ~w~has changed!~n~AOP: " .. FaxCurAOP)
 		end
 	else
 		TriggerClientEvent('AOP:NoPerms', source)
 	end
 end)
 
-
 RegisterServerEvent('AOP:Sync')
 AddEventHandler('AOP:Sync', function()
 	TriggerClientEvent('AOP:SendAOP', -1, FaxCurAOP)
 end)
 
-RegisterCommand(PTCommand, function(source, args, rawCommand)
-	if peacetime then
-		if source == 0 or IsPlayerAceAllowed(source, "faxes.aopcmds") or GetDiscordPermissionSet(source) or not usingPerms then
-			if(source == 0)then;print("Peacetime toggled");end
-			if not FaxCurPT then
-				TriggerClientEvent("AOP:DisNotification", -1, PTOnMessage)
-				FaxCurPT = true
-				TriggerEvent('AOP:PTSync')
-			elseif FaxCurPT then
-				TriggerClientEvent("AOP:DisNotification", -1, PTOffMessage)
-				FaxCurPT = false
-				TriggerEvent('AOP:PTSync')
+
+RegisterCommand(SOECommandLS, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
+		soeLS = table.concat(args, " ")
+		if(source == 0)then;print("SOE LS changed to: " .. soeLS);end
+		TriggerEvent("SOE:Sync")
+		if SOEChangeNotification then
+			if soeLS == "green" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Los Santos " .. textColor .. "has changed!~n~SOE: " .. soeGreen)
+			elseif soeLS == "amber" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Los Santos " .. textColor .. "has changed!~n~SOE: " .. soeAmber)
+			elseif soeLS == "red" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Los Santos " .. textColor .. "has changed!~n~SOE: " .. soeRed)
 			end
-		else
-			TriggerClientEvent('AOP:NoPerms', source)
 		end
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
 	end
 end)
 
-RegisterServerEvent('AOP:PTSync')
-AddEventHandler('AOP:PTSync', function()
-	TriggerClientEvent('AOP:SendPT', -1, FaxCurPT)
+RegisterCommand(SOECommandBC, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
+		soeBC = table.concat(args, " ")
+		if(source == 0)then;print("SOE BC changed to: " .. soeBC);end
+		TriggerEvent("SOE:Sync")
+		if SOEChangeNotification then
+			if soeBC == "green" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Blaine County " .. textColor .. "has changed!~n~SOE: " .. soeGreen)
+			elseif soeBC == "amber" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Blaine County " .. textColor .. "has changed!~n~SOE: " .. soeAmber)
+			elseif soeBC == "red" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Blaine County " .. textColor .. "has changed!~n~SOE: " .. soeRed)
+			end
+		end
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
+	end
+end)
+
+RegisterCommand(SOECommandPB, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
+		soePB = table.concat(args, " ")
+		if(source == 0)then;print("SOE PB changed to: " .. soePB);end
+		TriggerEvent("SOE:Sync")
+		if SOEChangeNotification then
+			if soePB == "green" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Paleto Bay " .. textColor .. "has changed!~n~SOE: " .. soeGreen)
+			elseif soePB == "amber" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Paleto Bay " .. textColor .. "has changed!~n~SOE: " .. soeAmber)
+			elseif soePB == "red" then
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Paleto Bay " .. textColor .. "has changed!~n~SOE: " .. soeRed)
+			end
+		end
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
+	end
+end)
+
+RegisterCommand(SOECommandGreenAll, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
+		soeLS = "green"
+		soeBC = "green"
+		soePB = "green"
+		if(source == 0)then;print("SOE Global changed to: " .. soePB);end
+		TriggerEvent("SOE:Sync")
+		if SOEChangeNotification then
+			TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The global ~y~State of Emergency " .. textColor .. "has changed!~n~SOE: " .. soeGreen)
+		end
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
+	end
+end)
+
+RegisterCommand(SOECommandAmberAll, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
+		soeLS = "amber"
+		soeBC = "amber"
+		soePB = "amber"
+		if(source == 0)then;print("SOE Global changed to: " .. soePB);end
+		TriggerEvent("SOE:Sync")
+		if SOEChangeNotification then
+			TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The global ~y~State of Emergency " .. textColor .. "has changed!~n~SOE: " .. soeAmber)
+		end
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
+	end
+end)
+
+RegisterCommand(SOECommandRedAll, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
+		soeLS = "red"
+		soeBC = "red"
+		soePB = "red"
+		if(source == 0)then;print("SOE Global changed to: " .. soePB);end
+		TriggerEvent("SOE:Sync")
+		if SOEChangeNotification then
+			TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The global ~y~State of Emergency " .. textColor .. "has changed!~n~SOE: " .. soeRed)
+		end
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
+	end
+end)
+
+RegisterServerEvent('SOE:Sync')
+AddEventHandler('SOE:Sync', function()
+	TriggerClientEvent('SOE:SendSOE', -1, soeLS, soeBC, soePB)
+end)
+
+RegisterServerEvent('AOP:CountRegistered')
+AddEventHandler('AOP:CountRegistered', function()
+	for i=1, #RegisteredAOP do
+		RegisteredAOPCount = RegisteredAOPCount + 1
+	end
 end)
 
 Citizen.CreateThread(function()
@@ -102,59 +175,73 @@ Citizen.CreateThread(function()
 			plcount = plcount + 1
 		end
 
-		if plcount > 30 then -- over 30
-			FaxCurAOP = ACAOPOver30
-			SetMapName("RP : " .. FaxCurAOP)
-			TriggerEvent("AOP:Sync")
-		elseif plcount < 5 then -- under 5
-			FaxCurAOP = ACAOPUnder5
-			SetMapName("RP : " .. FaxCurAOP)
-			TriggerEvent("AOP:Sync")
-		elseif plcount < 10 then -- under 10
-			FaxCurAOP = ACAOPUnder10
-			SetMapName("RP : " .. FaxCurAOP)
-			TriggerEvent("AOP:Sync")
-		elseif plcount < 20 then -- under 20
-			FaxCurAOP = ACAOPUnder20
-			SetMapName("RP : " .. FaxCurAOP)
-			TriggerEvent("AOP:Sync")
-		elseif plcount < 30 then -- under 30
-			FaxCurAOP = ACAOPUnder30
-			SetMapName("RP : " .. FaxCurAOP)
-			TriggerEvent("AOP:Sync")
+		for i=1, #RegisteredAOP do
+			local TabbedAOPName = RegisteredAOP[i].Name
+			local TabbedAOPPlayerCount = RegisteredAOP[i].MaxPlayerCount
+			local TabbedAOPCoords = RegisteredAOP[i].Coords
+
+			if TabbedAOPPlayerCount <= plcount then
+				FaxCurAOP = TabbedAOPName
+				SetMapName("RP : " .. FaxCurAOP)
+				TriggerEvent("AOP:Sync")
+			end
 		end
+
 		TriggerEvent("AOP:Sync")
 		Citizen.Wait(120 * 1000)
 	end
 end)
 
--- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! --
------------------------------------------------------------
--- THE BELOW IS FOR DEBUGGING AND CHECKERS. DO NOT TOUCH --
---       Touching the below results in NO support!       --
------------------------------------------------------------
+-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! --
+--------------------------------------------------------------
+--   THE BELOW IS FOR DEBUGGING AND CHECKERS. DO NOT TOUCH  --
+--       Touching the below results means NO support!       --
+--------------------------------------------------------------
 
-RegisterCommand("aopstatus", function(source, args, rawCommand)
-	TriggerClientEvent("Fax:ClientPrint", source, "Current AOP: " .. FaxCurAOP)
-	TriggerClientEvent("Fax:ClientPrint", source, "AOP Command: " .. AOPCommand)
-	TriggerClientEvent("Fax:ClientPrint", source, "PT Command: " .. PTCommand)
-	TriggerClientEvent("Fax:ClientPrint", source, "Feat Color: " .. featColor)
-	TriggerClientEvent("Fax:ClientPrint", source, "Auto Change AOP: " .. tostring(autoChangeAOP))
-	TriggerClientEvent("Fax:ClientPrint", source, "Using Permissions: " .. tostring(usingPerms))
-	TriggerClientEvent("Fax:ClientPrint", source, "Peacetime Func Enabled: " .. tostring(peacetime))
-	TriggerClientEvent("Fax:ClientPrint", source, "User Time Enabled: " .. tostring(localTime))
-	TriggerClientEvent("Fax:ClientPrint", source, "AOP Location Setting: " .. tostring(AOPLocation))
-	TriggerClientEvent("Fax:ClientPrint", source, "AOP Spawn Points: " .. tostring(AOPSpawnsEnabled))
-	if AOPLocation == 6 then
-		TriggerClientEvent("Fax:ClientPrint", source, "AOP Location X Setting: " .. tostring(AOPx))
-		TriggerClientEvent("Fax:ClientPrint", source, "AOP Location Y Setting: " .. tostring(AOPy))
+RegisterCommand(StatusCommand, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or IsPlayerAceAllowed(source, "aopscript.aopcmd") or not usingPerms then
+		TriggerEvent("AOP:CountRegistered")
+		TriggerClientEvent("Fax:ClientPrint", source, "Current AOP: " .. FaxCurAOP)
+		TriggerClientEvent("Fax:ClientPrint", source, "Auto Change AOP: " .. tostring(autoChangeAOP))
+		TriggerClientEvent("Fax:ClientPrint", source, "Registered AOP: " .. tostring(RegisteredAOPCount))
+		TriggerClientEvent("Fax:ClientPrint", source, "Use AOP Spawn Points: " .. tostring(AOPSpawnsEnabled))
+		TriggerClientEvent("Fax:ClientPrint", source, "Using Permissions: " .. tostring(usingPerms))
+		TriggerClientEvent("Fax:ClientPrint", source, "Display AOP Change Notification: " .. tostring(AOPChangeNotification))
+		TriggerClientEvent("Fax:ClientPrint", source, "Display SOE Change Notification: " .. tostring(SOEChangeNotification))
+		TriggerClientEvent("Fax:ClientPrint", source, "AOP Location Setting: " .. tostring(AOPTextLocation))
+		if AOPTextLocation == "custom" then
+			TriggerClientEvent("Fax:ClientPrint", source, "AOP Location X Setting: " .. tostring(AOPx))
+			TriggerClientEvent("Fax:ClientPrint", source, "AOP Location Y Setting: " .. tostring(AOPy))
+		end
+		TriggerClientEvent("Fax:ClientPrint", source, "------------------")
+		TriggerClientEvent("Fax:ClientPrint", source, "Current Version: " .. curVersion)
+		TriggerClientEvent("Fax:ClientPrint", source, "Script Credits: Script made by FAXES, edited by MGMods Studios")
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
 	end
-	TriggerClientEvent("Fax:ClientPrint", source, "------------------")
-	TriggerClientEvent("Fax:ClientPrint", source, "Current Version: " .. curVersion)
-	TriggerClientEvent("Fax:ClientPrint", source, "Script Credits: Script made by FAXES, Discord: FAXES#8655 - http://faxes.zone/discord")
 end)
 
-PerformHttpRequest("https://raw.githubusercontent.com/FAXES/ResourceStats/master/AOP.json", function(err, shit, headers)
+RegisterCommand(HelpCommand, function(source, args, rawCommand)
+	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or IsPlayerAceAllowed(source, "aopscript.aopcmd") or not usingPerms then
+		TriggerClientEvent("Fax:ClientPrint", source, "Status command: " .. StatusCommand .. "  --  Display various debug info; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "Refresh Command: " .. ConfigRefreshCommand .. "  --  Reload this config file; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "AOP Command: " .. AOPCommand .. "  --  Set the aop; usage: <command> [Area of Patrol]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE LS Command: " .. SOECommandLS .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE BC Command: " .. SOECommandBC .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE PB Command: " .. SOECommandPB .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Green Command: " .. SOECommandGreenAll .. "  --  Set all SOE to green; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Amber Command: " .. SOECommandAmberAll .. "  --  Set all SOE to amber; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Red Command: " .. SOECommandRedAll .. "  --  Set all SOE to red; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "Help Command: " .. HelpCommand .. "  --  Display this message; usage: <command>")
+		TriggerClientEvent("Fax:ClientPrint", source, "------------------")
+		TriggerClientEvent("Fax:ClientPrint", source, "Current Version: " .. curVersion)
+		TriggerClientEvent("Fax:ClientPrint", source, "Script Credits: Script made by FAXES, edited by MGMods Studios")
+	else
+		TriggerClientEvent('AOP:NoPerms', source)
+	end
+end)
+
+PerformHttpRequest("https://raw.githubusercontent.com/mg-mods/AOP-SOE/refs/heads/master/announce.json", function(err, shit, headers)
 	local data = json.decode(shit)
 	if data.announce == 1 and curVersion < data.version then
 		print("\n^5[Fax-AOP ^7- ^3Notice^5]^5 New Script Version: ^7" .. data.version .. ". ^5New Announcement: ^7" .. data.message .. "\n")
