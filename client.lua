@@ -17,6 +17,31 @@ local soeLSDisplay = soeRed
 local soeBCDisplay = soeRed
 
 
+function ShowBigMessage(title, subtitle, duration)
+    duration = duration or 5000
+
+    local scaleform = RequestScaleformMovie("MIDSIZE_MESSAGE")
+    while not HasScaleformMovieLoaded(scaleform) do
+        Wait(0)
+    end
+
+    BeginScaleformMovieMethod(scaleform, "SHOW_SHARD_CENTERED_MP_MESSAGE")
+    ScaleformMovieMethodAddParamPlayerNameString(title)
+    ScaleformMovieMethodAddParamTextureNameString(subtitle)
+    ScaleformMovieMethodAddParamInt(100)
+    EndScaleformMovieMethod()
+
+    CreateThread(function()
+        local endTime = GetGameTimer() + duration
+        while GetGameTimer() < endTime do
+            DrawScaleformMovieFullscreen(scaleform, 255, 255, 255, 255)
+            Wait(0)
+        end
+        SetScaleformMovieAsNoLongerNeeded(scaleform)
+    end)
+end
+
+
 AddEventHandler('onClientMapStart', function()
     TriggerEvent('AOP:RunConfig')
     Wait(2000)
@@ -41,17 +66,20 @@ AddEventHandler('Fax:ClientPrint', function(text)
 end)
 
 RegisterNetEvent('AOP:DisNotification')
-AddEventHandler('AOP:DisNotification', function(textPassed)
+AddEventHandler('AOP:DisNotification', function(textPassed, aop)
     BeginTextCommandDisplayHelp("STRING")
     AddTextComponentSubstringPlayerName(textPassed)
     EndTextCommandDisplayHelp(0, 0, 1, - 1)
+    -- showSubtitle(textColor .. "The ~y~AOP " .. textColor .. "has been changed to " .. aop, 10000)
+    ShowBigMessage(textColor .. "Area of Patrol", textColor .. "The ~y~AOP " .. textColor .. "has been changed to " .. aop, 5000)
 end)
 
 RegisterNetEvent('SOE:DisNotification')
-AddEventHandler('SOE:DisNotification', function(textPassed)
+AddEventHandler('SOE:DisNotification', function(textPassed, soeText, soeState)
     BeginTextCommandDisplayHelp("STRING")
     AddTextComponentSubstringPlayerName(textPassed)
     EndTextCommandDisplayHelp(0, 0, 1, - 1)
+    showSubtitle(textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soeText .. " " .. textColor .. "is now: " .. soeState, 10000)
 end)
 
 RegisterNetEvent('AOP:RunConfig')
@@ -82,7 +110,7 @@ AddEventHandler('AOP:RunConfig', function()
         AOPyNew2 = AOPyNew + 0.025
     end
     TriggerServerEvent("AOP:CountRegistered")
-    Citizen.Trace("[FAXES AOP SCRIPT] Config Ran")
+    Citizen.Trace("[AOP/SOE] Config Ran")
 end)
 
 

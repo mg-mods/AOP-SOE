@@ -28,7 +28,7 @@ Just drag and drop the folder in your resources. Please make sure that the folde
 Edit your config.cfg to add the following lines:
 ```
 ensure AOP-SOE
-exec resources/[path]/AOP-SOE/permissions.cfg
+exec @AOP-SOE/permissions.cfg
 ```
 
 Restart your server.

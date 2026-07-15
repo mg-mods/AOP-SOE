@@ -24,6 +24,7 @@ end)
 
 TriggerEvent("AOP:Startup")
 
+TriggerEvent('chat:addSuggestion', ConfigRefreshCommand, 'Refresh the AOP/SOE configuration', {})
 RegisterCommand(ConfigRefreshCommand, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.aopadmin") or not usingPerms then
 		TriggerClientEvent("AOP:RunConfig", -1)
@@ -33,6 +34,9 @@ RegisterCommand(ConfigRefreshCommand, function(source, args, rawCommand)
 	end
 end)
 
+TriggerEvent('chat:addSuggestion', AOPCommand, 'Sets the AOP', {
+    { name = 'AOP', help = 'Put the AOP here' } 
+})
 RegisterCommand(AOPCommand, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.aopcmd") or not usingPerms then
 		FaxCurAOP = table.concat(args, " ")
@@ -40,7 +44,7 @@ RegisterCommand(AOPCommand, function(source, args, rawCommand)
 		TriggerEvent("AOP:Sync")
 		SetMapName("RP : " .. FaxCurAOP)
 		if AOPChangeNotification then
-			TriggerClientEvent("AOP:DisNotification", -1, textColor .. "Area of Patrol ~w~has changed!~n~AOP: " .. FaxCurAOP)
+			TriggerClientEvent("AOP:DisNotification", -1, textColor .. "Area of Patrol ~w~has changed!~n~AOP: " .. FaxCurAOP, FaxCurAOP)
 		end
 	else
 		TriggerClientEvent('AOP:NoPerms', source)
@@ -53,18 +57,21 @@ AddEventHandler('AOP:Sync', function()
 end)
 
 
+TriggerEvent('chat:addSuggestion', SOECommandLS, 'Sets the SOE state for ' .. soeLSTextName, {
+    { name = 'State', help = 'Green | Amber | Red' } 
+})
 RegisterCommand(SOECommandLS, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
 		soeLS = table.concat(args, " ")
-		if(source == 0)then;print("SOE LS changed to: " .. soeLS);end
+		if(source == 0)then;print("SOE " .. soeLSTextShort .. " changed to: " .. soeLS);end
 		TriggerEvent("SOE:Sync")
 		if SOEChangeNotification then
 			if soeLS == "green" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Los Santos " .. textColor .. "has changed!~n~SOE: " .. soeGreen)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soeLSText .. " " .. textColor .. "has changed!~n~SOE: " .. soeGreen, soeLSText, soeGreen)
 			elseif soeLS == "amber" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Los Santos " .. textColor .. "has changed!~n~SOE: " .. soeAmber)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soeLSText .. " " .. textColor .. "has changed!~n~SOE: " .. soeAmber, soeLSText, soeAmber)
 			elseif soeLS == "red" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Los Santos " .. textColor .. "has changed!~n~SOE: " .. soeRed)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soeLSText .. " " .. textColor .. "has changed!~n~SOE: " .. soeRed, soeLSText, soeRed)
 			end
 		end
 	else
@@ -72,18 +79,21 @@ RegisterCommand(SOECommandLS, function(source, args, rawCommand)
 	end
 end)
 
+TriggerEvent('chat:addSuggestion', SOECommandBC, 'Sets the SOE state for ' .. soeBCTextName, {
+    { name = 'State', help = 'Green | Amber | Red' } 
+})
 RegisterCommand(SOECommandBC, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
 		soeBC = table.concat(args, " ")
-		if(source == 0)then;print("SOE BC changed to: " .. soeBC);end
+		if(source == 0)then;print("SOE " .. soeBCTextShort .. " changed to: " .. soeBC);end
 		TriggerEvent("SOE:Sync")
 		if SOEChangeNotification then
 			if soeBC == "green" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Blaine County " .. textColor .. "has changed!~n~SOE: " .. soeGreen)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soeBCText .. " " .. textColor .. "has changed!~n~SOE: " .. soeGreen, soeBCText, soeGreen)
 			elseif soeBC == "amber" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Blaine County " .. textColor .. "has changed!~n~SOE: " .. soeAmber)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soeBCText .. " " .. textColor .. "has changed!~n~SOE: " .. soeAmber, soeBCText, soeAmber)
 			elseif soeBC == "red" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Blaine County " .. textColor .. "has changed!~n~SOE: " .. soeRed)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soeBCText .. " " .. textColor .. "has changed!~n~SOE: " .. soeRed, soeBCText, soeRed)
 			end
 		end
 	else
@@ -91,18 +101,21 @@ RegisterCommand(SOECommandBC, function(source, args, rawCommand)
 	end
 end)
 
+TriggerEvent('chat:addSuggestion', SOECommandPB, 'Sets the SOE state for ' .. soePBTextName, {
+    { name = 'State', help = 'Green | Amber | Red' } 
+})
 RegisterCommand(SOECommandPB, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
 		soePB = table.concat(args, " ")
-		if(source == 0)then;print("SOE PB changed to: " .. soePB);end
+		if(source == 0)then;print("SOE " .. soePBTextShort .. " changed to: " .. soePB);end
 		TriggerEvent("SOE:Sync")
 		if SOEChangeNotification then
 			if soePB == "green" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Paleto Bay " .. textColor .. "has changed!~n~SOE: " .. soeGreen)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soePBText .. " " .. textColor .. "has changed!~n~SOE: " .. soeGreen, soePBText, soeGreen)
 			elseif soePB == "amber" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Paleto Bay " .. textColor .. "has changed!~n~SOE: " .. soeAmber)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soePBText .. " " .. textColor .. "has changed!~n~SOE: " .. soeAmber, soePBText, soeAmber)
 			elseif soePB == "red" then
-				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~Paleto Bay " .. textColor .. "has changed!~n~SOE: " .. soeRed)
+				TriggerClientEvent("SOE:DisNotification", -1, textColor .. "The ~y~State of Emergency " .. textColor .. "in ~b~" .. soePBText .. " " .. textColor .. "has changed!~n~SOE: " .. soeRed, soePBText, soeRed)
 			end
 		end
 	else
@@ -110,6 +123,7 @@ RegisterCommand(SOECommandPB, function(source, args, rawCommand)
 	end
 end)
 
+TriggerEvent('chat:addSuggestion', SOECommandGreenAll, 'Sets all SOE states to Green', {})
 RegisterCommand(SOECommandGreenAll, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
 		soeLS = "green"
@@ -125,6 +139,7 @@ RegisterCommand(SOECommandGreenAll, function(source, args, rawCommand)
 	end
 end)
 
+TriggerEvent('chat:addSuggestion', SOECommandAmberAll, 'Sets all SOE states to Amber', {})
 RegisterCommand(SOECommandAmberAll, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
 		soeLS = "amber"
@@ -140,6 +155,7 @@ RegisterCommand(SOECommandAmberAll, function(source, args, rawCommand)
 	end
 end)
 
+TriggerEvent('chat:addSuggestion', SOECommandRedAll, 'Sets all SOE states to Red', {})
 RegisterCommand(SOECommandRedAll, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or not usingPerms then
 		soeLS = "red"
@@ -203,10 +219,14 @@ end)
 --       Touching the below results means NO support!       --
 --------------------------------------------------------------
 
+TriggerEvent('chat:addSuggestion', StatusCommand, 'Shows the AOP/SOE status', {})
 RegisterCommand(StatusCommand, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or IsPlayerAceAllowed(source, "aopscript.aopcmd") or not usingPerms then
 		TriggerEvent("AOP:CountRegistered")
 		TriggerClientEvent("Fax:ClientPrint", source, "Current AOP: " .. FaxCurAOP)
+		TriggerClientEvent("Fax:ClientPrint", source, "Current SOE " .. soeLSTextNameShort .. ": " .. soeLS)
+		TriggerClientEvent("Fax:ClientPrint", source, "Current SOE " .. soeBCTextNameShort .. ": " .. soeBC)
+		TriggerClientEvent("Fax:ClientPrint", source, "Current SOE " .. soePBTextNameShort .. ": " .. soePB)
 		TriggerClientEvent("Fax:ClientPrint", source, "Auto Change AOP: " .. tostring(autoChangeAOP))
 		TriggerClientEvent("Fax:ClientPrint", source, "Players connected: " .. tostring(plcount))
 		TriggerClientEvent("Fax:ClientPrint", source, "Registered AOP: " .. tostring(RegisteredAOPCount))
@@ -227,14 +247,15 @@ RegisterCommand(StatusCommand, function(source, args, rawCommand)
 	end
 end)
 
+TriggerEvent('chat:addSuggestion', HelpCommand, 'Shows all available AOP/SOE commands and their syntax', {})
 RegisterCommand(HelpCommand, function(source, args, rawCommand)
 	if source == 0 or IsPlayerAceAllowed(source, "aopscript.soecmd") or IsPlayerAceAllowed(source, "aopscript.aopcmd") or not usingPerms then
 		TriggerClientEvent("Fax:ClientPrint", source, "Status command: /" .. StatusCommand .. "  --  Display various debug info; usage: <command>")
 		TriggerClientEvent("Fax:ClientPrint", source, "Refresh Command: /" .. ConfigRefreshCommand .. "  --  Reload this config file; usage: <command>")
 		TriggerClientEvent("Fax:ClientPrint", source, "AOP Command: /" .. AOPCommand .. "  --  Set the aop; usage: <command> [Area of Patrol]")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE LS Command: /" .. SOECommandLS .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE BC Command: /" .. SOECommandBC .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
-		TriggerClientEvent("Fax:ClientPrint", source, "SOE PB Command: /" .. SOECommandPB .. "  --  Set SOE for LS; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE " .. soeLSTextNameShort .. " Command: /" .. SOECommandLS .. "  --  Set SOE for " .. soeLSTextNameShort .. "; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE " .. soeBCTextNameShort .. " Command: /" .. SOECommandBC .. "  --  Set SOE for " .. soeBCTextNameShort .. "; usage: <command> [green | amber | red]")
+		TriggerClientEvent("Fax:ClientPrint", source, "SOE " .. soePBTextNameShort .. " Command: /" .. SOECommandPB .. "  --  Set SOE for " .. soePBTextNameShort .. "; usage: <command> [green | amber | red]")
 		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Green Command: /" .. SOECommandGreenAll .. "  --  Set all SOE to green; usage: <command>")
 		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Amber Command: /" .. SOECommandAmberAll .. "  --  Set all SOE to amber; usage: <command>")
 		TriggerClientEvent("Fax:ClientPrint", source, "SOE All Red Command: /" .. SOECommandRedAll .. "  --  Set all SOE to red; usage: <command>")

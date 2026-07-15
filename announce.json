@@ -1,6 +1,6 @@
 {
     "status":0,
     "message":"",
-    "version":"4.0",
-    "changelog":"Removed date, time and peacetime. Added SOE. Reworked the whole config file and switched to ACE perms."
+    "version":"4.2",
+    "changelog":"Added command hints; reworked the notifications; various tweaks."
 }
